@@ -1,0 +1,16 @@
+.nav-links li {
+    list-style: none;
+    display: inline-block;
+    margin-right: 15%;
+}
+
+.nav-bar {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links {
+    display: flex;
+}
+
+.banner {margin-right: 66%;}
