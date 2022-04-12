@@ -1,40 +1,44 @@
 import { useEffect, useState } from "react";
-import { createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
 import auth from "../Firebase/firebase.init";
 import { useLocation, useNavigate } from "react-router-dom";
 
 // firebase auth
 const UseFirebase = () => {
-    const [user, setUser] = useState(null);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [fullName, setFullName] = useState("");
+    // state
+    const [user, setUser] = useState({});
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState();
+    const [loading, setLoading] = useState(true);
+
+    // navigate to
     const location = useLocation();
     const navigate = useNavigate();
     const from = location.state?.from?.pathname || "/shop";
 
     // get user from firebase
     useEffect(() => {
-        onAuthStateChanged(auth, user => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUser(user);
+            } else {
+                setUser({});
             }
+            setLoading(false);
         });
-
-    }, [user])
-
+        return () => unsubscribe;
+    }, []);
 
     // handle login
     const HandleLogin = (e) => {
         e.preventDefault();
+        setLoading(true);
         const email = e.target.elements.email.value; // from elements property
         const password = e.target.password.value;
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
+                // check if user is verified
                 if (user.emailVerified) {
                     console.log(user);
                     setUser(user);
@@ -43,15 +47,50 @@ const UseFirebase = () => {
                 } else {
                     alert("Please verify your email");
                 }
-
-                // ...
             })
             .catch((error) => {
+                // Handle Errors here.
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(errorCode, errorMessage);
                 setLoading(false);
             })
+    };
+
+    // handle google login
+    const HandleGoogleLogin = () => {
+        const googleProvider = new GoogleAuthProvider();
+        signInWithPopup(auth, googleProvider)
+            .then(result => {
+                setUser(result.user);
+                setError(null);
+                navigate(from, { replace: true });
+            })
+            .catch((error) => console.error(error))
+    }
+
+    // logIn with facebook
+    const handleFacebookLogin = () => {
+        const facebookProvider = new FacebookAuthProvider();
+        signInWithPopup(auth, facebookProvider)
+            .then(result => {
+                setUser(result.user);
+                setError(null);
+                navigate(from, { replace: true });
+            })
+            .catch((error) => console.error(error))
+    }
+
+    // logIn with github
+    const handleGithubLogin = () => {
+        const githubProvider = new GithubAuthProvider();
+        signInWithPopup(auth, githubProvider)
+            .then(result => {
+                setUser(result.user);
+                setError(null);
+                navigate(from, { replace: true });
+            })
+            .catch((error) => console.error(error))
     }
 
     // update user profile
@@ -88,17 +127,15 @@ const UseFirebase = () => {
             setError("Password and Confirm Password does not match");
             return;
         }
-        setLoading(true);
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                // Signed in 
+                // Signed Up
                 const user = userCredential.user;
                 console.log(user);
                 updateUserProfile(fullName)
                 setUser(user);
                 verifyEmail();
-                setLoading(false);
-                // ...
+                navigate('/login')
             }
             )
             .catch((error) => {
@@ -124,7 +161,7 @@ const UseFirebase = () => {
 
 
     // return { user, email, password, error, loading, handleEmail, handlePassword, handleFullName, handleLogin };
-    return { user, email, password, error, loading, HandleLogin, handleSignUp, handleLogout };
+    return { user, error, loading, HandleLogin, HandleGoogleLogin, handleFacebookLogin, handleGithubLogin, handleSignUp, handleLogout };
 }
 
 export default UseFirebase;

@@ -1,9 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import UseFirebase from '../../../Hooks/useFirebase';
 
 const Login = () => {
-    const { HandleLogin } = UseFirebase();
+    const { HandleLogin, HandleGoogleLogin, handleFacebookLogin, handleGithubLogin } = UseFirebase();
     return (
         <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
             <div className="w-3/5 relative py-3 sm:max-w-xl sm:mx-auto">
@@ -29,8 +28,18 @@ const Login = () => {
 
                                     <div className="pt-4 flex items-center space-x-4">
                                         <input type="submit" className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none" value="log in" />
+                                    </div>
+                                    <div className="pt-4 flex items-center space-x-4">
+                                        <button onClick={HandleGoogleLogin} className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none">Google</button>
 
-                                        {/* <input type="submit" className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none" value="Log In" /> */}
+                                    </div>
+                                    <div className="pt-4 flex items-center space-x-4">
+                                        <button onClick={handleFacebookLogin} className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none">Facebook</button>
+
+                                    </div>
+                                    <div className="pt-4 flex items-center space-x-4">
+                                        <button onClick={handleGithubLogin} className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none">Github</button>
+
                                     </div>
                                 </div>
                             </div>
