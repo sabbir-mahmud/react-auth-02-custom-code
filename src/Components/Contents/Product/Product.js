@@ -1,8 +1,7 @@
 import React from 'react';
 
 const Product = (product) => {
-    console.log(product);
-    const { stock, shipping, seller, name, img, price, id } = product.product;
+    const { seller, name, img, price } = product.product;
 
     return (
         <div className="max-w-sm rounded overflow-hidden shadow-lg">

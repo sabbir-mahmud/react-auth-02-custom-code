@@ -1,12 +1,15 @@
 import React from 'react';
-import useAuthenticatedUser from '../../../Hooks/Firebase/useAuntenticatedUser';
+import UseFirebase from '../../../Hooks/useFirebase';
 
 const Accounts = () => {
-    const [user] = useAuthenticatedUser();
+    const { user, loading, handleLogout } = UseFirebase();
+    console.log(loading);
     return (
         <div>
             <h1>Accounts</h1>
-            <p>{user ? user.email : 'No user'}</p>
+            <p>{user ? user.displayName : 'No user'}</p>
+            <p>{user ? user.email : ''}</p>
+            <button onClick={handleLogout}>Logout</button>
 
         </div>
     );

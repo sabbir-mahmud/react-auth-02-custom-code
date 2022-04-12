@@ -1,13 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import UseFirebase from '../../../Hooks/useFirebase';
 
 const Login = () => {
-    const { handleEmail, handlePassword, handleLogin } = UseFirebase();
+    const { HandleLogin } = UseFirebase();
     return (
         <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
             <div className="w-3/5 relative py-3 sm:max-w-xl sm:mx-auto">
                 <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
-                    <form onSubmit={handleLogin}>
+                    <form onSubmit={HandleLogin}>
                         <div className="max-w-md mx-auto">
                             <div className="flex items-center space-x-5">
                                 <div className="block pl-2 font-semibold text-xl self-start text-gray-700">

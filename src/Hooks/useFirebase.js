@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import auth from "../Firebase/firebase.init";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // firebase auth
 const UseFirebase = () => {
@@ -9,10 +10,24 @@ const UseFirebase = () => {
     const [password, setPassword] = useState("");
     const [fullName, setFullName] = useState("");
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const from = location.state?.from?.pathname || "/shop";
+
+    // get user from firebase
+    useEffect(() => {
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                setUser(user);
+            }
+        });
+
+    }, [user])
+
 
     // handle login
-    const handleLogin = (e) => {
+    const HandleLogin = (e) => {
         e.preventDefault();
         const email = e.target.elements.email.value; // from elements property
         const password = e.target.password.value;
@@ -20,9 +35,15 @@ const UseFirebase = () => {
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
-                console.log(user);
-                setUser(user);
-                setLoading(false);
+                if (user.emailVerified) {
+                    console.log(user);
+                    setUser(user);
+                    setLoading(false);
+                    navigate(from, { replace: true });
+                } else {
+                    alert("Please verify your email");
+                }
+
                 // ...
             })
             .catch((error) => {
@@ -33,38 +54,6 @@ const UseFirebase = () => {
             })
     }
 
-    // // handle button click
-    // const handleEmail = (e) => {
-    //     setEmail(e.target.value)
-    // };
-
-    // const handlePassword = (e) => {
-    //     setPassword(e.target.value)
-    // };
-
-    // const handleFullName = (e) => {
-    //     setFullName(e.target.value)
-    // };
-
-    // // handle sign in
-    // const handleLogin = (e) => {
-    //     e.preventDefault();
-    //     signInWithEmailAndPassword(auth, email, password)
-    //         .then((userCredential) => {
-    //             // Signed in 
-    //             const user = userCredential.user;
-    //             console.log(user);
-    //             setUser(user);
-    //             // ...
-    //         })
-    //         .catch((error) => {
-    //             const errorCode = error.code;
-    //             const errorMessage = error.message;
-    //             console.log(errorCode, errorMessage);
-    //         });
-
-    // }
-
     // update user profile
     const updateUserProfile = (fullName) => {
         const user = auth.currentUser;
@@ -74,6 +63,14 @@ const UseFirebase = () => {
             .then(() => {
             })
             .catch((error) => {
+            });
+    }
+
+    // verify email
+    const verifyEmail = () => {
+        sendEmailVerification(auth.currentUser)
+            .then(() => {
+                console.log("Email sent");
             });
     }
 
@@ -99,6 +96,7 @@ const UseFirebase = () => {
                 console.log(user);
                 updateUserProfile(fullName)
                 setUser(user);
+                verifyEmail();
                 setLoading(false);
                 // ...
             }
@@ -113,8 +111,20 @@ const UseFirebase = () => {
             );
     }
 
+    // handle logout
+    const handleLogout = () => {
+        auth.signOut()
+            .then(() => {
+                setUser(null);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+
     // return { user, email, password, error, loading, handleEmail, handlePassword, handleFullName, handleLogin };
-    return { user, email, password, error, loading, handleLogin, handleSignUp };
+    return { user, email, password, error, loading, HandleLogin, handleSignUp, handleLogout };
 }
 
 export default UseFirebase;

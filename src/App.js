@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import Login from './Components/Auth/login/Login';
 import Register from './Components/Auth/Register/Register';
+import RequireAuth from './Components/Auth/RequireAuth/RequireAuth';
 import Products from './Components/Contents/Products/Products';
 import Accounts from './Components/Home/Accounts/Accounts';
 import Homepage from './Components/Home/Homepage/Homepage';
@@ -17,7 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/shop" element={<Products />} />
-        <Route path="/account" element={<Accounts />} />
+        <Route path="/account" element={<RequireAuth><Accounts /></RequireAuth>} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
