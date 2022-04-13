@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import UseFirebase from '../../../Hooks/useFirebase';
 
 const Login = () => {
@@ -29,6 +30,10 @@ const Login = () => {
                                     <div className="pt-4 flex items-center space-x-4">
                                         <input type="submit" className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none" value="log in" />
                                     </div>
+                                    <hr className='mb-3' />
+                                    <Link className='my-3 text-underline text-blue' to='/reset-password'>forget your password?</Link>
+
+                                    <hr />
                                     <div className="pt-4 flex items-center space-x-4">
                                         <button onClick={HandleGoogleLogin} className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none">Google</button>
 
