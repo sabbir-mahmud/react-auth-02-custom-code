@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { createUserWithEmailAndPassword, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, updatePassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, OAuthProvider, onAuthStateChanged, RecaptchaVerifier, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPhoneNumber, signInWithPopup, updatePassword, updateProfile } from "firebase/auth";
 import auth from "../Firebase/firebase.init";
 import { useLocation, useNavigate } from "react-router-dom";
+
 
 // firebase auth
 const UseFirebase = () => {
@@ -52,7 +53,6 @@ const UseFirebase = () => {
                 // Handle Errors here.
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log(errorCode, errorMessage);
                 setLoading(false);
             })
     };
@@ -92,6 +92,70 @@ const UseFirebase = () => {
             })
             .catch((error) => console.error(error))
     }
+
+    // logIn with OAuth/Microsoft
+    const handleOAuthLogin = () => {
+        console.log("OAuth login");
+        let microsoftProvider = new OAuthProvider('microsoft.com');
+        microsoftProvider.setCustomParameters({
+            prompt: "consent",
+            display: "popup"
+        })
+        signInWithPopup(auth, microsoftProvider)
+            .then((result) => {
+                // User is signed in.
+                // IdP data available in result.additionalUserInfo.profile.
+
+                // Get the OAuth access token and ID Token
+                const credential = OAuthProvider.credentialFromResult(result);
+                const accessToken = credential.accessToken;
+                const idToken = credential.idToken;
+                setUser(credential);
+            })
+            .catch((error) => {
+                // Handle error.
+                console.log(error);
+            });
+    };
+    // sign in with yahoo
+    const yahooLogin = () => {
+        const provider = new OAuthProvider('yahoo.com');
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                // IdP data available in result.additionalUserInfo.profile
+                // ...
+
+                // Yahoo OAuth access token and ID token can be retrieved by calling:
+                const credential = OAuthProvider.credentialFromResult(result);
+                const accessToken = credential.accessToken;
+                const idToken = credential.idToken;
+                console.log(credential);
+            })
+            .catch((error) => {
+                // Handle error.
+                console.log(error);
+            });
+    }
+
+    // sign in with phone
+    const phoneLogIn = () => {
+        const phoneNumber = '+8801782844241';
+        const appVerifier = window.recaptchaVerifier;
+
+        signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+            .then((confirmationResult) => {
+                // SMS sent. Prompt user to type the code from the message, then sign the
+                // user in with confirmationResult.confirm(code).
+                window.confirmationResult = confirmationResult;
+                console.log(confirmationResult);
+                // ...
+            }).catch((error) => {
+                // Error; SMS not sent
+                console.log(error);
+                // ...
+            });
+    }
+
 
     // update user profile
     const updateUserProfile = (fullName) => {
@@ -193,9 +257,7 @@ const UseFirebase = () => {
         });
     }
 
-
-    // return { user, email, password, error, loading, handleEmail, handlePassword, handleFullName, handleLogin };
-    return { user, error, loading, HandleLogin, HandleGoogleLogin, handleFacebookLogin, handleGithubLogin, handleSignUp, handleLogout, handleResetPassword, handleChangePassword };
+    return { user, error, loading, HandleLogin, HandleGoogleLogin, handleFacebookLogin, handleGithubLogin, handleOAuthLogin, phoneLogIn, yahooLogin, handleSignUp, handleLogout, handleResetPassword, handleChangePassword };
 }
 
 export default UseFirebase;

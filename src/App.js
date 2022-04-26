@@ -6,6 +6,8 @@ import Register from './Components/Auth/Register/Register';
 import RequireAuth from './Components/Auth/RequireAuth/RequireAuth';
 import ResetPassword from './Components/Auth/ResetPassword/ResetPassword';
 import ResetUserPassword from './Components/Auth/ResetUserPassword/ResetUserPassword';
+import Order from './Components/Contents/Order/Order';
+import ProductDetails from './Components/Contents/ProductDetails/ProductDetails';
 import Products from './Components/Contents/Products/Products';
 import Accounts from './Components/Home/Accounts/Accounts';
 import Homepage from './Components/Home/Homepage/Homepage';
@@ -20,7 +22,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/shop" element={<Products />} />
+        <Route path="/shop/:id" element={<ProductDetails />} />
         <Route path="/account" element={<RequireAuth><Accounts /></RequireAuth>} />
+        <Route path="/order" element={<Order />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/reset-password" element={<ResetPassword />} />

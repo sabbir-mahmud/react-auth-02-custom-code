@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import UseFirebase from '../../../Hooks/useFirebase';
 
 const Login = () => {
-    const { HandleLogin, HandleGoogleLogin, handleFacebookLogin, handleGithubLogin } = UseFirebase();
+    const { HandleLogin, HandleGoogleLogin, handleFacebookLogin, handleGithubLogin, handleOAuthLogin, phoneLogIn, yahooLogin } = UseFirebase();
     return (
         <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
             <div className="w-3/5 relative py-3 sm:max-w-xl sm:mx-auto">
@@ -39,11 +39,23 @@ const Login = () => {
 
                                     </div>
                                     <div className="pt-4 flex items-center space-x-4">
+                                        <button onClick={handleOAuthLogin} className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none">Microsoft</button>
+
+                                    </div>
+                                    <div className="pt-4 flex items-center space-x-4">
                                         <button onClick={handleFacebookLogin} className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none">Facebook</button>
 
                                     </div>
                                     <div className="pt-4 flex items-center space-x-4">
                                         <button onClick={handleGithubLogin} className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none">Github</button>
+
+                                    </div>
+                                    <div className="pt-4 flex items-center space-x-4">
+                                        <button onClick={phoneLogIn} className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none">Phone</button>
+
+                                    </div>
+                                    <div className="pt-4 flex items-center space-x-4">
+                                        <button onClick={yahooLogin} className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none">Yahoo</button>
 
                                     </div>
                                 </div>
